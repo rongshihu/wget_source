@@ -545,7 +545,7 @@ run_wgetrc (const char *file)  // 这个文件的解析后，如果出现file无
   ln = 1;
   while ((line = read_whole_line (fp)) != NULL)
     {
-      char *com = NULL, *val = NULL;
+      char *com = NULL, *val = NULL; // command
       int comind;
 
       /* Parse the line.  */
@@ -676,9 +676,9 @@ parse_line (const char *line, char **com, char **val, int *comind)
   int ind;
 
   /* Skip leading and trailing whitespace.  */
-  while (*line && c_isspace (*line))
+  while (*line && c_isspace (*line)) // bool c_isspace() 如果是 '' '\t' '\n' '\f' '\v'等空白，就略过; line有值且为空白
     ++line;
-  while (end > line && c_isspace (end[-1]))
+  while (end > line && c_isspace (end[-1])) // 因为end指向了line的末尾，所有这里对end[-1]来索引，即从0的左边一位，注意
     --end;
 
   /* Skip empty lines and comments.  */
