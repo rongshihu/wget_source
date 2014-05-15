@@ -545,7 +545,7 @@ run_wgetrc (const char *file)  // 这个文件的解析后，如果出现file无
   ln = 1;
   while ((line = read_whole_line (fp)) != NULL)
     {
-      char *com = NULL, *val = NULL; // command
+      char *com = NULL, *val = NULL; // command, value
       int comind;
 
       /* Parse the line.  */
@@ -707,7 +707,7 @@ parse_line (const char *line, char **com, char **val, int *comind)
   /* The syntax is valid (even though the command might not be).  Fill
      in the command name and value.  */
   *com = strdupdelim (cmdstart, cmdend); // 从这里看出来一个解析字符串的过程
-  *val = strdupdelim (valstart, valend);
+  *val = strdupdelim (valstart, valend); // strdupdelim 这个函数会在内部malloc内存来存放val的值，并返回一个指针
 
   /* The line now known to be syntactically correct.  Check whether
      the command is valid.  */
