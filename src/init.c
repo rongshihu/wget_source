@@ -280,7 +280,7 @@ command_by_name (const char *cmdname)
 
   while (lo <= hi)
     {
-      int mid = (lo + hi) >> 1;
+      int mid = (lo + hi) >> 1; // 相当于 (lo + hi) / 2
       int cmp = strcasecmp (cmdname, commands[mid].name);
       if (cmp < 0)
         hi = mid - 1;
@@ -545,11 +545,11 @@ run_wgetrc (const char *file)  // 这个文件的解析后，如果出现file无
   ln = 1;
   while ((line = read_whole_line (fp)) != NULL)
     {
-      char *com = NULL, *val = NULL;
+      char *com = NULL, *val = NULL; // command
       int comind;
 
       /* Parse the line.  */
-      switch (parse_line (line, &com, &val, &comind))
+      switch (parse_line (line, &com, &val, &comind))  // 分析line，解析出来com和val，根据com在commands表中查找到其所在的位置comind并返回
         {
         case line_ok:
           /* If everything is OK, set the value.  */
@@ -650,7 +650,7 @@ dehyphen (char *s)
       ++h;
     else
       *t++ = *h++;
-  *t = '\0';
+  *t = '\0';  // 复制并截断
 }
 
 /* Parse the line pointed by line, with the syntax:
@@ -676,19 +676,19 @@ parse_line (const char *line, char **com, char **val, int *comind)
   int ind;
 
   /* Skip leading and trailing whitespace.  */
-  while (*line && c_isspace (*line))
+  while (*line && c_isspace (*line)) // bool c_isspace() 如果是 '' '\t' '\n' '\f' '\v'等空白，就略过; line有值且为空白
     ++line;
-  while (end > line && c_isspace (end[-1]))
+  while (end > line && c_isspace (end[-1])) // 因为end指向了line的末尾，所有这里对end[-1]来索引，即从0的左边一位，注意
     --end;
 
   /* Skip empty lines and comments.  */
-  if (!*line || *line == '#')
+  if (!*line || *line == '#')  // 前面的while 循环已经让line移动到非空字符上了，如果此处  *line 还是空字符，那么本行就是空啊,简便确认是否注释
     return line_empty;
 
   p = line;
 
   cmdstart = p;
-  while (p < end && (c_isalnum (*p) || *p == '_' || *p == '-'))
+  while (p < end && (c_isalnum (*p) || *p == '_' || *p == '-')) // 下划线，短横线，都考虑到了数字字母表无法包括的情况
     ++p;
   cmdend = p;
 
@@ -697,7 +697,7 @@ parse_line (const char *line, char **com, char **val, int *comind)
     ++p;
   if (p == end || *p != '=')
     return line_syntax_error;
-  ++p;
+  ++p;  // 略过 '='
   while (p < end && c_isspace (*p))
     ++p;
 
@@ -706,14 +706,14 @@ parse_line (const char *line, char **com, char **val, int *comind)
 
   /* The syntax is valid (even though the command might not be).  Fill
      in the command name and value.  */
-  *com = strdupdelim (cmdstart, cmdend);
+  *com = strdupdelim (cmdstart, cmdend); // 从这里看出来一个解析字符串的过程
   *val = strdupdelim (valstart, valend);
 
   /* The line now known to be syntactically correct.  Check whether
      the command is valid.  */
   BOUNDED_TO_ALLOCA (cmdstart, cmdend, cmdcopy);
   dehyphen (cmdcopy);
-  ind = command_by_name (cmdcopy);
+  ind = command_by_name (cmdcopy); // 里面读取的比较的commands已经是按字母表排序好了的,所以可以用二分法查找
   if (ind == -1)
     return line_unknown_command;
 

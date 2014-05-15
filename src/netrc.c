@@ -194,7 +194,7 @@ read_whole_line (FILE *fp)
       bufsize <<= 1; // 效果就是 bufsize = bufsize * 2 即左移一位，增加一倍
       line = xrealloc (line, bufsize);  // 把line指向的内存扩大大bufsize，而bufsize已经增大一倍了
     }
-  if (length == 0 || ferror (fp)) // ferror 测试fp是否有errno错误，如果有错，返回非0
+  if (length == 0 || ferror (fp)) // ferror 测试fp是否有errno错误，如果有错，ferror返回非0
     {
       xfree (line);  // #define xfree free
       return NULL;
