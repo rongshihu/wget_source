@@ -178,7 +178,7 @@ char *
 read_whole_line (FILE *fp)
 {
   int length = 0;
-  int bufsize = 81;  // 幻数怎么来的？假设大多数数据不超过81字节,while循环中大小不够时，有增大内存操作，
+  int bufsize = 81;  // 幻数应该来源于以前的终端宽度是80，while循环中会对可能超过80进行增加
   char *line = xmalloc (bufsize);
 
   // char *fgets(char *s, int size, FILE *stream);
